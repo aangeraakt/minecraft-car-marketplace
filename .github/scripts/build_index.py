@@ -16,16 +16,16 @@ for cid in sorted(os.listdir("cars")):
     except Exception as e:
         problems.append(f"{cid}: meta.json unreadable ({e})")
         continue
-    pkg = os.path.join(d, "car.bmwcar")
+    pkg = os.path.join(d, "car.garagecar")
     if not os.path.isfile(pkg) or not os.path.isfile(os.path.join(d, "thumbnail.png")):
-        problems.append(f"{cid}: needs car.bmwcar and thumbnail.png")
+        problems.append(f"{cid}: needs car.garagecar and thumbnail.png")
         continue
     data = open(pkg, "rb").read()
     if len(data) > MAX:
-        problems.append(f"{cid}: car.bmwcar is over 50 MB")
+        problems.append(f"{cid}: car.garagecar is over 50 MB")
     sha = hashlib.sha256(data).hexdigest()
     if meta.get("sha256", "").lower() != sha:
-        problems.append(f"{cid}: sha256 in meta.json does not match car.bmwcar")
+        problems.append(f"{cid}: sha256 in meta.json does not match car.garagecar")
     if meta.get("license") not in ALLOWED:
         problems.append(f"{cid}: license must be one of {sorted(ALLOWED)}")
     if meta.get("id") != cid:
@@ -34,14 +34,14 @@ for cid in sorted(os.listdir("cars")):
         with zipfile.ZipFile(pkg) as z:
             names = z.namelist()
             if "car.json" not in names:
-                problems.append(f"{cid}: car.bmwcar has no car.json")
+                problems.append(f"{cid}: car.garagecar has no car.json")
             for n in names:
                 if n.startswith("/") or ".." in n.split("/"):
                     problems.append(f"{cid}: bad path in package: {n}")
             if sum(i.file_size for i in z.infolist()) > 200 * 1024 * 1024:
                 problems.append(f"{cid}: package unpacks to over 200 MB")
     except zipfile.BadZipFile:
-        problems.append(f"{cid}: car.bmwcar is not a zip")
+        problems.append(f"{cid}: car.garagecar is not a zip")
     entry = {k: meta.get(k) for k in ("id", "name", "author", "license", "description", "version", "size", "sha256", "triangles", "updated", "publisher")}
     entry["size"] = len(data)
     entry["sha256"] = sha

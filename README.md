@@ -1,6 +1,6 @@
 # Car marketplace
 
-Cars for the **BMW M4 / custom cars** Minecraft mod (Fabric 1.21.11). Browse and install them in game:
+Cars for the **Garage** Minecraft mod (Fabric 1.21.11). Browse and install them in game:
 press **U**, then **Marketplace**.
 
 ## Publishing
@@ -11,7 +11,7 @@ Every car is a folder `cars/<id>/` with:
 
 | File | What |
 |---|---|
-| `car.bmwcar` | the car: a zip with `car.json`, the glTF model and its textures |
+| `car.garagecar` | the car: a zip with `car.json`, the glTF model and its textures |
 | `thumbnail.png` | 256x144 preview |
 | `meta.json` | name, author, license, size, sha256 (the mod writes it) |
 

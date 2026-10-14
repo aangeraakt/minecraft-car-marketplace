@@ -32,14 +32,14 @@ human() { comment "## Car check"$'\n\n'"**A human will review this:** $1"; label
 files=$(jq -r '.files[] | "\(.path)\t\(.additions)\t\(.deletions)"' <<<"$pr_json")
 ids=$(jq -r '.files[].path' <<<"$pr_json" | awk -F/ '$1=="cars"{print $2}' | sort -u)
 while IFS=$'\t' read -r path add del; do
-  [[ "$path" =~ ^cars/[a-z0-9_]{1,64}/(car\.bmwcar|thumbnail\.png|meta\.json)$ ]] || human "the pull request changes \`$path\`, which is not a car file. Only car folders can be approved automatically."
+  [[ "$path" =~ ^cars/[a-z0-9_]{1,64}/(car\.garagecar|thumbnail\.png|meta\.json)$ ]] || human "the pull request changes \`$path\`, which is not a car file. Only car folders can be approved automatically."
 done <<<"$files"
 [ "$(wc -l <<<"$ids")" -eq 1 ] && [ -n "$ids" ] || human "the pull request touches more than one car folder."
 id="$ids"
 
 # 2. download the car files from the pull request (as data)
 mkdir -p "$work/car"
-for f in car.bmwcar thumbnail.png meta.json; do
+for f in car.garagecar thumbnail.png meta.json; do
   if ! gh api -H "Accept: application/vnd.github.raw" "repos/$head_repo/contents/cars/$id/$f?ref=$head_sha" > "$work/car/$f"; then
     human "could not download \`cars/$id/$f\` from the pull request."
   fi
