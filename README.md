@@ -23,3 +23,19 @@ Every car is a folder `cars/<id>/` with:
 - No models ripped from games.
 - 50 MB per car at most.
 - Pull requests are checked automatically (files, size, checksum, license) and then reviewed by hand.
+
+## Review bot
+Every car pull request is checked by the **Car review bot** (`.github/workflows/review-car.yml`). It loads the model
+with the mod's own importer (`tools/car-validator.jar`) and checks that it is a real, working, well calibrated car:
+enough detail, car-like size and shape, textures, wheels on the ground in left/right pairs with wheel geometry inside
+them, front wheels steering, seats inside the car, sane physics, a real thumbnail, and an allowed license.
+
+| Result | What happens |
+|---|---|
+| everything OK | approved, merged and added to the car list automatically (label `auto-approved`) |
+| something doubtful | a comment explains what, label `needs-human-review`; a maintainer decides |
+| clearly broken | changes requested with the reasons (label `changes-requested`); a maintainer can still decide |
+
+Pull requests that change anything other than one car folder are never merged automatically.
+The bot never runs code from a pull request; it only reads the car files.
+To re-check a pull request by hand: **Actions > Car review bot > Run workflow** (dry run only comments).

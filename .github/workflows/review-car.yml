@@ -1,0 +1,42 @@
+name: Car review bot
+# Reviews car pull requests: approves + merges cars that pass every check, asks a human otherwise.
+# Security: pull_request_target runs THIS repo's workflow and validator (never code from the pull request);
+# the pull request's car files are only downloaded and read as data.
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths: ["cars/**"]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: "Pull request number to check"
+        required: true
+      dry_run:
+        description: "Only comment, never approve or merge"
+        type: boolean
+        default: true
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+concurrency:
+  group: car-review
+  cancel-in-progress: false
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main   # the trusted base branch, never the pull request
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Review
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number || inputs.pr }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+          REPO: ${{ github.repository }}
+        run: bash .github/scripts/review_car.sh
