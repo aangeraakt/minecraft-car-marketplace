@@ -1,4 +1,18 @@
 {
   "format": 1,
-  "cars": []
+  "cars": [
+    {
+      "id": "aangeraakt_2024_volkswagen_virtus_tsi",
+      "name": "2024 Volkswagen Virtus Tsi",
+      "author": "TrobiOnTheBeat",
+      "license": "CC-BY-SA-4.0",
+      "description": "2024 Volkswagen Virtus Tsi",
+      "version": 1,
+      "size": 7465948,
+      "sha256": "3668c3ae2f4b5f47e9d36ec73bb094bd339daec2302f72127a907df530582d0e",
+      "triangles": 293411,
+      "updated": "2026-10-14T07:34:02.579842100Z",
+      "publisher": "aangeraakt"
+    }
+  ]
 }
