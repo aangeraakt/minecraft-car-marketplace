@@ -20,7 +20,8 @@ permissions:
   pull-requests: write
   issues: write
 concurrency:
-  group: car-review
+  # one queue per pull request (a shared queue would cancel waiting reviews when several arrive at once)
+  group: car-review-${{ github.event.pull_request.number || inputs.pr }}
   cancel-in-progress: false
 jobs:
   review:

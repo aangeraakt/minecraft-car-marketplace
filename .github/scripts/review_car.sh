@@ -66,13 +66,16 @@ case "$verdict" in
       human "every check passed but merging failed (conflict?)."
     fi
     # merges made by the bot do not start other workflows: rebuild the car list here
-    git fetch -q origin main && git checkout -q -B main origin/main
-    python .github/scripts/build_index.py --write
-    if ! git diff --quiet index.json; then
-      git config user.name "github-actions[bot]"
-      git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-      git add index.json && git commit -q -m "Update index.json ($id)" && git push -q origin main
-    fi
+    git config user.name "github-actions[bot]"
+    git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+    for try in 1 2 3 4 5; do   # another merge may land at the same moment: rebuild on the newest main and retry
+      git fetch -q origin main && git checkout -q -B main origin/main
+      python .github/scripts/build_index.py --write || break
+      git diff --quiet index.json && break
+      git add index.json && git commit -q -m "Update index.json ($id)"
+      git push -q origin main && break
+      sleep $((try * 5))
+    done
     ;;
   human)
     comment "$report"
