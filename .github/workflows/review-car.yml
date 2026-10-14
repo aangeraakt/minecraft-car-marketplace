@@ -4,7 +4,7 @@ name: Car review bot
 # the pull request's car files are only downloaded and read as data.
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
     paths: ["cars/**"]
   workflow_dispatch:
     inputs:
@@ -24,6 +24,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   review:
+    # draft pull requests are skipped until marked ready (run it by hand for a dry run)
+    if: github.event_name == 'workflow_dispatch' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
